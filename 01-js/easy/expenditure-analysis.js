@@ -14,20 +14,21 @@
 */
 
 function calculateTotalSpentByCategory(transactions) {
-  const categories = [];
-  const result = [];
-  for (let index = 0; index < transactions.length; index++) {
-    const cat = transactions[index][category];
-    categories.push(cat);
+  let result = [];
+  if (transactions.length == 0) {
+    return [];
   }
+  const categories = Array.from(
+    new Set(transactions.map((obj) => obj.category)),
+  );
   for (let index = 0; index < categories.length; index++) {
-    const total = 0;
-    transactions.array.forEach((transaction) => {
+    let total = 0;
+    transactions.forEach((transaction) => {
       if (transaction["category"] === categories[index]) {
-        total += transaction["price"];
+        total += parseInt(transaction["price"]);
       }
     });
-    result.push(new Object({ category: categories[index], price: total }));
+    result.push({ category: categories[index], totalSpent: total });
   }
 
   return result;
