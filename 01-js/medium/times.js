@@ -7,7 +7,16 @@ Try running it for
 Hint - use Date class exposed in JS
 There is no automated test for this one, this is more for you to understand time goes up as computation goes up
 */
-
 function calculateTime(n) {
-    return 0.01;
+    const start = new Date();
+    let sum = 0;
+    for (i = 1; i <= n; i++) {
+        sum++;
+    }
+    const end = new Date();
+    time = end.getTime() - start.getTime();
+    return time.toFixed(2);
+    // return 0.01;
 }
+
+console.log(calculateTime(1000000000));
