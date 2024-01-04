@@ -17,27 +17,48 @@
 */
 
 class Calculator {
-  result = 0;
-  clear() {
+  constructor() {
     this.result = 0;
   }
   clear() {
+    this.result = 0;
+  }
+
+  getResult() {
     return this.result;
   }
   add(value) {
-    return this.result + value;
+
+    this.result += value;
   }
   subtract(value) {
-    return this.result - value;
+
+    this.result -= value;
   }
   multiply(value) {
-    return this.result *value;
+
+    this.result *= value;
   }
   divide(value) {
-    return this.result / value;
+
+    if (value == 0) {
+      throw new Error("Division by zero is not allowed");
+    }
+
+    (this.result /= value).toFixed(2);
+
   }
+  calculate(expression) {
+    if (!/^[0-9\s+\-*/().]+$/.test(expression)) {
+      throw new Error("Invalid characters found in the string.");
+    }
 
-
+    let temp = eval(expression);
+    if (isNaN(temp) || !isFinite(temp)) {
+      throw new Error("Dividing with 0 error");
+    }
+    this.result = eval(expression);
+  }
 }
 
 module.exports = Calculator;
