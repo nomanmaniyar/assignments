@@ -1,3 +1,4 @@
+
 /**
   You need to create an express HTTP server in Node.js which will handle the logic of a file server.
   - Use built in Node.js `fs` module
@@ -17,5 +18,14 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
+app.get('/files', async (resreq) => {
+  try {
+    const files = await fs.promises.readdir('./files');
+    res.json(files);
+  } catch (error) {
+    console.error(err);
+    res.status(500).send('Error retrieving file list');
+  }
+})
 
 module.exports = app;
