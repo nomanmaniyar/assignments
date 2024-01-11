@@ -5,6 +5,19 @@
  */
 
 function sleep(milliseconds) {
+    const startTime = Date.now();
+    const endTime = startTime + milliseconds;
+
+    // while (Date.now() < endTime) {
+    //     console.log(" This empty loop is the essence of busy waiting")
+    // }
+    for (let index = 0; index < milliseconds; index++) {
+        console.log(index)
+
+    }
+    return new Promise((resolve) => {
+        resolve();
+    });
 }
 
 module.exports = sleep;
