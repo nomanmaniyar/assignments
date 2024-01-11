@@ -18,14 +18,31 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-app.get('/files', async (resreq) => {
-  try {
-    const files = await fs.promises.readdir('./files');
+// Endpoint for listing files
+app.get('/files', async (req, res) => {
+  fs.readdir(path.join(__dirname, './files/'), (err, files) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to retrieve files' });
+    }
     res.json(files);
-  } catch (error) {
-    console.error(err);
-    res.status(500).send('Error retrieving file list');
-  }
-})
+  });
+});
+
+app.get('/file/:filename', async (req, res) => {
+  const filePath = path.join(__dirname, './files/', req.params.filename);
+  fs.readFile(filePath, 'UTF-8', (err, data) => {
+    if (err) {
+      return res.status(404).send('File not found');
+    }
+    res.send(data);
+  });
+});
+
+
+app.all('*', (req, res) => {
+  res.status(404).send('Route not found');
+});
+
+// app.listen(3000)
 
 module.exports = app;
