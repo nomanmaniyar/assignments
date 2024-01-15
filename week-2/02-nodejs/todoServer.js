@@ -51,10 +51,10 @@ let todos;
 fs.readFile(filePath, "utf8", function (err, data) {
   if (err) throw err;
   if (data) {
-    console.log("DATA NOT NULL: ", data);
+    // console.log("DATA NOT NULL: ", data);
     todos = JSON.parse(data);
   } else {
-    console.log("DATA NULL: ", data);
+    // console.log("DATA NULL: ", data);
     todos = [];
   }
   // todos = JSON.parse(data)
@@ -74,14 +74,13 @@ function getIndex(id) {
   return -1
 }
 app.get('/todos', (req, res) => {
-  res.json(todos);
+  return res.json(todos);
 });
 app.get('/todos/:id', (req, res) => {
   const index = getIndex(parseInt(req.params.id));
   console.log("INDEX::::", index, "\n ID::::", parseInt(req.params.id));
-  if (index == -1) res.sendStatus(404).json({ "code": "404", "message": "Todo not found" })
-
-  res.json(todos[index]);
+  if (index == -1) return res.status(404).json({ "code": "404", "message": "Todo not found" })
+  return res.status(200).json(todos[index]);
 });
 
 app.post('/todos', async (req, res) => {
@@ -94,29 +93,30 @@ app.post('/todos', async (req, res) => {
   try {
     todos.push(newTodo);
     saveTodo();
-    res.status(201).json({ "id": newTodo.id })
+    return res.status(201).json({ "id": newTodo.id })
   } catch (error) {
-    res.status(500).json({ "error": "SOMETHING WENT WRONG." })
+    return res.status(500).json({ "error": "SOMETHING WENT WRONG." })
   }
 });
 
 
-// app.put('/todos/:id', (req, res) => {
-//   const updateTodo = {
-//     "id": req.params.id,
-//     "title": req.body.title,
-//     "description": req.body.description,
-//     "completed": req.body.completed,
-//   }
-//   const index = getIndex(req.params.id);
-//   if (index === -1) res.sendStatus(404).json({ "code": "404", "message": "Todo not found" })
-//   console.log("BEFORE UPDATE: ", todos[index]);
-//   todos[index] = updateTodo;
-//   console.log("After UPDATE: ", todos[index]);
-//   saveTodo()
-//   res.sendStatus(200).json({ "message": "Todo updated successfully" })
-// });
-// app.listen(3000)
-// console.log("SERVER STARTED ON http://localhost/3000/todos")
+app.put('/todos/:id', (req, res) => {
+  const updateTodo = {
+    "id": req.params.id,
+    "title": req.body.title,
+    "description": req.body.description,
+    "completed": req.body.completed,
+  }
+  const index = getIndex(req.params.id);
+  console.log("INDEX:  ", index);
+  if (index === -1) return res.status(404).json({ "code": "404", "message": "Todo not found" })
+  console.log("BEFORE UPDATE: ", todos[index]);
+  todos[index] = updateTodo;
+  console.log("After UPDATE: ", todos[index]);
+  saveTodo()
+  return res.status(200).json({ "message": "Todo updated successfully" })
+});
+app.listen(3000)
+console.log("SERVER STARTED ON http://localhost/3000/todos")
 
 module.exports = app;
